@@ -69,3 +69,8 @@ See the docs for `fzf#run` for more customization options.
 
 You can look in `dotfiles/kakoune.nix` in <https://git.bytes.zone/brian/dotfiles.nix> to see how to use in [kakoune](https://kakoune.org).
 I use [connect.kak](https://github.com/alexherbo2/connect.kak) to spawn a terminal window with about the same command line as in the vim config above.
+
+## License
+
+CC BY-SA 4.0.
+See LICENSE in the root of the project for details.
