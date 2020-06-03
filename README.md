@@ -28,21 +28,23 @@ example
 If I am in `src/Page/Learn/Home/View.elm` and I want to get to the sibling file `Main.elm`, the default `fzf` config shows me `src/Main.elm` first.
 That's not what I wanted!
 
-But if I sort the files instead by passing them through `similar-sort src/Page/Learn/Home/View.elm`, the sibling file will show up first.
-This works surprisingly well, and I really like it!
+But if I sort the files instead by piping them through `similar-sort src/Page/Learn/Home/View.elm`, the sibling file will show up first.
+This works surprisingly well; I really like it!
 
 It could probably perform a *little* better by doing some heuristic based on equivalent file structure except for the addition/removal of "tests", "specs", etc, but I haven't bothered yet.
 
 ## Installing
 
-You can look in `dotfiles/kakoune.nix` in the root of this project to see how to use this in a home-manager context.
-If you're not using home-manager, or you just want to install it globally, `cd` here and type:
+If you have [`nix`](https://nixos.org) installed, clone this and type:
 
 ```sh
 nix-env -if .
 ```
 
-OR if you have `go` installed but not `nix`, just `go build similar-sort.go`; it has no external dependencies and will result in a static binary you can put wherever.
+After this, the `similar-sort` binary should be available on your `PATH`.
+
+If you don't have `nix`, you'll need to install the `go` compiler yourself and run `go build similar-sort.go`.
+The project has no external dependencies and should result in a static binary you can put wherever.
 
 ### Adding to Vim
 
@@ -65,4 +67,5 @@ See the docs for `fzf#run` for more customization options.
 
 ### Adding to Kakoune
 
+You can look in `dotfiles/kakoune.nix` in <https://git.bytes.zone/brian/dotfiles.nix> to see how to use in [kakoune](https://kakoune.org).
 I use [connect.kak](https://github.com/alexherbo2/connect.kak) to spawn a terminal window with about the same command line as in the vim config above.
