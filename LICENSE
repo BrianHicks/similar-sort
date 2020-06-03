@@ -1,0 +1,4 @@
+similar-sort is licensed CC BY-SA 4.0.
+
+"Wait, why?", I hear you say, "That's an unusual choice for source code!"
+Put quite simply, it's because this package is a wrapper around a Levenshtein distance implementation I got from WikiPedia, which is licensed under CC BY-SA 3.0.
