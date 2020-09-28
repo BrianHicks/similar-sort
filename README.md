@@ -67,8 +67,19 @@ See the docs for `fzf#run` for more customization options.
 
 ### Adding to Kakoune
 
-You can look in `dotfiles/kakoune.nix` in <https://git.bytes.zone/brian/dotfiles.nix> to see how to use in [kakoune](https://kakoune.org).
-I use [connect.kak](https://github.com/alexherbo2/connect.kak) to spawn a terminal window with about the same command line as in the vim config above.
+Assuming you're using tmux as your window manager, integration looks something like this:
+
+```
+define-command -docstring 'open files named similarly to the current buffer' open-similar %{
+    tmux-terminal-horizontal sh -c %{
+        set -euo pipefail
+        FILE="$(git ls-files --others --cached --exclude-standard | similar-sort $1 | grep -v $1 | fzf --tiebreak index)"
+        printf "evaluate-commands -client %s edit %s\n" "$2" "$FILE" | kak -p $3
+    } -- %val{bufname} %val{client} %val{session}
+}
+```
+
+I have this bound to `-` with `map global normal <minus> ': open-similar<ret>'`.
 
 ## License
 
