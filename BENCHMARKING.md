@@ -115,3 +115,36 @@ Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
 
 And quite a speedup it is!
 About 150ms over the previous improvement.
+
+## Precalculate sizes
+
+This is so much of a bigger result that I wonder if we're doing more work in parallel than we really need to?
+What if we compute the distances in a `map` instead of doing it in the parallel code?
+
+```
+$ hyperfine './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     170.1 ms ±   4.5 ms    [User: 158.5 ms, System: 12.6 ms]
+  Range (min … max):   163.5 ms … 181.6 ms    16 runs
+```
+
+Yay!
+That finally gave us the result we wanted this whole time!
+It's way faster!
+
+A real comparison:
+
+```
+$ hyperfine './result/bin/similar-sort define < /usr/share/dict/words' './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./result/bin/similar-sort define < /usr/share/dict/words
+  Time (mean ± σ):     287.8 ms ±   5.1 ms    [User: 254.8 ms, System: 75.3 ms]
+  Range (min … max):   282.3 ms … 296.2 ms    10 runs
+
+Benchmark #2: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     165.8 ms ±   7.4 ms    [User: 154.5 ms, System: 12.2 ms]
+  Range (min … max):   155.8 ms … 186.2 ms    15 runs
+
+Summary
+  './target/release/similar-sort benchmark < /usr/share/dict/words' ran
+    1.74 ± 0.08 times faster than './result/bin/similar-sort define < /usr/share/dict/words'
+```

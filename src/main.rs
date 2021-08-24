@@ -25,16 +25,17 @@ fn try_main() -> Result<()> {
 
     let opts = Opts::from_args();
 
-    let mut lines: Vec<String> = stdin()
+    let mut lines: Vec<(usize, String)> = stdin()
         .lock()
         .lines()
-        .collect::<io::Result<Vec<String>>>()
+        .map(|line| line.map(|candidate| (levenshtein(&opts.target, &candidate), candidate)))
+        .collect::<io::Result<Vec<(usize, String)>>>()
         .context("could not read lines from stdin")?;
 
-    lines.par_sort_unstable_by_key(|candidate| levenshtein(&opts.target, candidate));
+    lines.par_sort_unstable_by_key(|x| x.0);
 
     let mut out = BufWriter::new(stdout());
-    for candidate in lines {
+    for (_, candidate) in lines {
         writeln!(out, "{}", candidate).context("could not write to stdout")?;
     }
 
