@@ -1,5 +1,6 @@
 use clap::{crate_authors, crate_version, App, Arg};
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{ContextCompat, Result, WrapErr};
+use std::io::{self, stdin, BufRead};
 
 fn main() {
     if let Err(err) = try_main() {
@@ -22,7 +23,17 @@ fn try_main() -> Result<()> {
                 .required(true)
         ).get_matches();
 
-    println!("{:?}", matches);
+    let target = matches.value_of("target").context(
+        "could not get the target value. This is an internal error and should be reported.",
+    )?;
+
+    let lines: Vec<String> = stdin()
+        .lock()
+        .lines()
+        .collect::<io::Result<Vec<String>>>()
+        .context("could not read lines from stdin")?;
+
+    println!("{:?}", lines);
 
     Ok(())
 }
