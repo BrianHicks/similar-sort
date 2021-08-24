@@ -33,6 +33,15 @@
         defaultApp = apps.similar-sort;
 
         # `nix develop`
-        devShell = pkgs.mkShell { nativeBuildInputs = [ pkgs.go ]; };
+        devShell = pkgs.mkShell {
+          nativeBuildInputs = [
+            pkgs.cargo
+            pkgs.cargo-edit
+            pkgs.cargo-watch
+            pkgs.rustPackages.clippy
+            pkgs.rustc
+            pkgs.rustfmt
+          ];
+        };
       });
 }
