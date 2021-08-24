@@ -4,6 +4,9 @@ use std::io::{self, stdin, stdout, BufRead, BufWriter, Write};
 use strsim::levenshtein;
 use structopt::StructOpt;
 
+#[global_allocator]
+static A: bump_alloc::BumpAlloc = bump_alloc::BumpAlloc::new();
+
 // works like `sort`, but sorts according to Levenshtein distance instead of
 // alphanumerically.
 #[derive(StructOpt)]
@@ -42,6 +45,7 @@ fn try_main() -> Result<()> {
     for (_, candidate) in distances {
         writeln!(out, "{}", candidate).context("could not write to stdout")?;
     }
+    out.flush().context("could not finish writing to stdout")?;
 
     Ok(())
 }

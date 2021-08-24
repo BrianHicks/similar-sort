@@ -170,3 +170,24 @@ Summary
 ```
 
 Yep!
+
+## Bump Allocation (again)
+
+Let's try the bump allocator again... it seemed like a fluke that it produced such a severe performance degradation.
+
+```
+$ hyperfine './result/bin/similar-sort define < /usr/share/dict/words' './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./result/bin/similar-sort define < /usr/share/dict/words
+  Time (mean ± σ):     286.2 ms ±   5.0 ms    [User: 251.4 ms, System: 72.5 ms]
+  Range (min … max):   280.8 ms … 298.4 ms    10 runs
+
+Benchmark #2: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     111.3 ms ±   3.4 ms    [User: 94.7 ms, System: 16.0 ms]
+  Range (min … max):   104.1 ms … 118.5 ms    24 runs
+
+Summary
+  './target/release/similar-sort benchmark < /usr/share/dict/words' ran
+    2.57 ± 0.09 times faster than './result/bin/similar-sort define < /usr/share/dict/words'
+```
+
+That seems more like what I'd expect!
