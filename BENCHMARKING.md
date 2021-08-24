@@ -71,3 +71,17 @@ Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
 ```
 
 So, no to that too!
+
+## Removing arg parsing overhead?
+
+What if it's creating that big Clap struct that's causing problems?
+Let's give structopt a try (and then move to deriving from Clap once 3.0.0 is finally released.)
+
+```
+$ hyperfine './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     667.5 ms ±   7.1 ms    [User: 4.158 s, System: 0.031 s]
+  Range (min … max):   658.3 ms … 678.2 ms    10 runs
+```
+
+Ok, seems fine!

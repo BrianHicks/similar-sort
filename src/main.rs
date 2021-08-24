@@ -1,8 +1,17 @@
-use clap::{crate_authors, crate_version, App, Arg};
-use color_eyre::eyre::{ContextCompat, Result, WrapErr};
+use color_eyre::eyre::{Result, WrapErr};
 use rayon::prelude::*;
 use std::io::{self, stdin, stdout, BufRead, BufWriter, Write};
 use strsim::levenshtein;
+use structopt::StructOpt;
+
+// works like `sort`, but sorts according to Levenshtein distance instead of
+// alphanumerically.
+#[derive(StructOpt)]
+#[structopt(name = "similar-sort")]
+struct Opts {
+    /// sort according to distance from this string
+    target: String,
+}
 
 fn main() {
     if let Err(err) = try_main() {
@@ -14,20 +23,7 @@ fn main() {
 fn try_main() -> Result<()> {
     color_eyre::install()?;
 
-    let matches = App::new("similar-sort")
-        .version(crate_version!())
-        .author(crate_authors!())
-        .about("works like `sort`, but sorts according to Levenshtein distance instead of alphanumerically")
-        .arg(
-            Arg::with_name("target")
-                .value_name("TARGET")
-                .help("sort according to distance from this string")
-                .required(true)
-        ).get_matches();
-
-    let target = matches.value_of("target").context(
-        "could not get the target value. This is an internal error and should be reported.",
-    )?;
+    let opts = Opts::from_args();
 
     let mut lines: Vec<String> = stdin()
         .lock()
@@ -35,7 +31,7 @@ fn try_main() -> Result<()> {
         .collect::<io::Result<Vec<String>>>()
         .context("could not read lines from stdin")?;
 
-    lines.par_sort_by_key(|candidate| levenshtein(target, candidate));
+    lines.par_sort_by_key(|candidate| levenshtein(&opts.target, candidate));
 
     let mut out = BufWriter::new(stdout());
     for candidate in lines {
