@@ -191,3 +191,8 @@ Summary
 ```
 
 That seems more like what I'd expect!
+
+## Coda
+
+2.57 times faster for an hour and a half of work is pretty good!
+Next time I'm running a Linux machine, maybe I'll try some of the fancier Linux-only Rust performance tools; maybe there's more to be gained here!
