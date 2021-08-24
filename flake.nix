@@ -2,7 +2,7 @@
   description = "sort lines by their similarity to a candidate string";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?ref=release-21.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-21.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
