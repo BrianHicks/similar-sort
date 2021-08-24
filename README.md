@@ -43,8 +43,7 @@ nix-env -if .
 
 After this, the `similar-sort` binary should be available on your `PATH`.
 
-If you don't have `nix`, you'll need to install the `go` compiler yourself and run `go build similar-sort.go`.
-The project has no external dependencies and should result in a static binary you can put wherever.
+If you don't have `nix`, you'll need to install a Rust compiler toolchain yourself and run `cargo build`.
 
 ### Adding to Vim
 
