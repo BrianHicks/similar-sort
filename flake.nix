@@ -41,6 +41,10 @@
             pkgs.rustPackages.clippy
             pkgs.rustc
             pkgs.rustfmt
+
+            # for some reason this is always needed when building Rust stuff, at
+            # least on macOS
+            pkgs.libiconv
           ];
         };
       });
