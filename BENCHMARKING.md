@@ -55,3 +55,19 @@ Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
   Time (mean ± σ):     612.9 ms ±  15.0 ms    [User: 3.768 s, System: 0.030 s]
   Range (min … max):   595.7 ms … 640.2 ms    10 runs
 ```
+
+Well, not that then.
+
+## Without `strsim`
+
+Maybe `strsim` is doing something inefficient?
+What if we try, say, `levenshtein`, which appears to operate on strings directly instead?
+
+```
+$ hyperfine './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     715.6 ms ±   6.9 ms    [User: 4.483 s, System: 0.033 s]
+  Range (min … max):   705.7 ms … 725.5 ms    10 runs
+```
+
+So, no to that too!
