@@ -100,3 +100,18 @@ Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
 ```
 
 ... well, no. Probably not a good idea.
+
+## Unstable Sort
+
+Looking at the Go implementation again, it looks like I used an unstable sort instead of a stable one.
+OK, that's fine, we'll grab that speedup:
+
+```
+hyperfine './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     502.2 ms ±   6.6 ms    [User: 660.1 ms, System: 12.7 ms]
+  Range (min … max):   491.5 ms … 513.2 ms    10 runs
+```
+
+And quite a speedup it is!
+About 150ms over the previous improvement.

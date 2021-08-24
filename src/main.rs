@@ -31,7 +31,7 @@ fn try_main() -> Result<()> {
         .collect::<io::Result<Vec<String>>>()
         .context("could not read lines from stdin")?;
 
-    lines.par_sort_by_key(|candidate| levenshtein(&opts.target, candidate));
+    lines.par_sort_unstable_by_key(|candidate| levenshtein(&opts.target, candidate));
 
     let mut out = BufWriter::new(stdout());
     for candidate in lines {
