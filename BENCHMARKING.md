@@ -13,3 +13,37 @@ Benchmark #1: ./result/bin/similar-sort benchmark < /usr/share/dict/words
 ```
 
 Let's see if we can get any faster than that!
+
+## First naive attempt
+
+Just getting something working:
+
+```
+$ hyperfine './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):      2.579 s ±  0.053 s    [User: 2.535 s, System: 0.017 s]
+  Range (min … max):    2.537 s …  2.725 s    10 runs
+```
+
+So... much worse than my naive attempt in Go.
+However, this version is also doing proper argument parsing and has a little nicer error handling.
+Let's try and make it parallel!
+
+## Rayon
+
+Rayon is nice!
+Simply substituting `sort_by_key` for `par_sort_by_key` makes this a ton faster.
+
+```
+$ hyperfine './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     609.6 ms ±   9.1 ms    [User: 3.748 s, System: 0.029 s]
+  Range (min … max):   598.9 ms … 629.1 ms    10 runs
+```
+
+hIt's still twice as slow as the Go version, though!
+Wow!
+
+OK, let's see if we can get some quick flamegraph profiling in here...
+
+## Profiling
