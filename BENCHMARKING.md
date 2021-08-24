@@ -196,3 +196,20 @@ That seems more like what I'd expect!
 
 2.57 times faster for an hour and a half of work is pretty good!
 Next time I'm running a Linux machine, maybe I'll try some of the fancier Linux-only Rust performance tools; maybe there's more to be gained here!
+
+Once I get a `naersk` build with all the optimizations enabled, here's the final result:
+
+```
+$ hyperfine './result/bin/similar-sort define < /usr/share/dict/words' './go-result/bin/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./result/bin/similar-sort define < /usr/share/dict/words
+  Time (mean ± σ):      99.1 ms ±   2.3 ms    [User: 83.7 ms, System: 16.0 ms]
+  Range (min … max):    95.9 ms … 104.6 ms    28 runs
+
+Benchmark #2: ./go-result/bin/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     304.4 ms ±   4.4 ms    [User: 269.9 ms, System: 77.1 ms]
+  Range (min … max):   299.9 ms … 313.8 ms    10 runs
+
+Summary
+  './result/bin/similar-sort define < /usr/share/dict/words' ran
+    3.07 ± 0.08 times faster than './go-result/bin/similar-sort benchmark < /usr/share/dict/words'
+```
