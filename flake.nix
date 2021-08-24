@@ -37,5 +37,8 @@
         apps.similar-sort =
           inputs.flake-utils.lib.mkApp { drv = packages.similar-sort; };
         defaultApp = apps.similar-sort;
+
+        # `nix develop`
+        devShell = pkgs.mkShell { nativeBuildInputs = [ pkgs.go ]; };
       });
 }
