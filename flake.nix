@@ -6,9 +6,9 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = inputs:
-    inputs.flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = inputs.nixpkgs.legacyPackages.${system};
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = nixpkgs.legacyPackages.${system};
       in rec {
         # `nix build`
         packages.similar-sort = pkgs.stdenv.mkDerivation {
@@ -29,7 +29,7 @@
 
         # `nix run`
         apps.similar-sort =
-          inputs.flake-utils.lib.mkApp { drv = packages.similar-sort; };
+          flake-utils.lib.mkApp { drv = packages.similar-sort; };
         defaultApp = apps.similar-sort;
 
         # `nix develop`
