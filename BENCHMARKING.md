@@ -148,3 +148,25 @@ Summary
   './target/release/similar-sort benchmark < /usr/share/dict/words' ran
     1.74 ± 0.08 times faster than './result/bin/similar-sort define < /usr/share/dict/words'
 ```
+
+## Calculating sizes in parallel
+
+What if we calculated the size in parallel?
+Could we get it even faster?
+
+```
+hyperfine './result/bin/similar-sort define < /usr/share/dict/words' './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./result/bin/similar-sort define < /usr/share/dict/words
+  Time (mean ± σ):     295.0 ms ±   5.6 ms    [User: 259.3 ms, System: 76.5 ms]
+  Range (min … max):   287.4 ms … 305.2 ms    10 runs
+
+Benchmark #2: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     153.5 ms ±   3.4 ms    [User: 143.0 ms, System: 11.0 ms]
+  Range (min … max):   147.5 ms … 163.0 ms    19 runs
+
+Summary
+  './target/release/similar-sort benchmark < /usr/share/dict/words' ran
+    1.92 ± 0.06 times faster than './result/bin/similar-sort define < /usr/share/dict/words'
+```
+
+Yep!
