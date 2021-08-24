@@ -16,6 +16,7 @@
         pkgs = inputs.nixpkgs.legacyPackages.${system};
         gitignore = pkgs.callPackage inputs.gitignore { };
       in rec {
+        # `nix build`
         packages.similar-sort = pkgs.stdenv.mkDerivation {
           name = "similar-sort";
           buildInputs = [ pkgs.go ];
@@ -30,7 +31,11 @@
             cp similar-sort $out/bin
           '';
         };
-
         defaultPackage = packages.similar-sort;
+
+        # `nix run`
+        apps.similar-sort =
+          inputs.flake-utils.lib.mkApp { drv = packages.similar-sort; };
+        defaultApp = apps.similar-sort;
       });
 }
