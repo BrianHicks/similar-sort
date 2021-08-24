@@ -2,29 +2,19 @@
   description = "sort lines by their similarity to a candidate string";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/release-21.05";
     flake-utils.url = "github:numtide/flake-utils";
+    naersk.url = "github:nix-community/naersk";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-21.05";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, naersk }:
     flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system};
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+        naersk-lib = naersk.lib.${system};
       in rec {
         # `nix build`
-        packages.similar-sort = pkgs.stdenv.mkDerivation {
-          name = "similar-sort";
-          buildInputs = [ pkgs.go ];
-          src = ./.;
-
-          buildPhase = ''
-            env HOME=$(pwd) GOPATH=$(pwd) go build similar-sort.go
-          '';
-
-          installPhase = ''
-            mkdir -p $out/bin
-            cp similar-sort $out/bin
-          '';
-        };
+        packages.similar-sort = naersk-lib.buildPackage ./.;
         defaultPackage = packages.similar-sort;
 
         # `nix run`
