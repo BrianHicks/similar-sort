@@ -41,9 +41,17 @@ Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
   Range (min … max):   598.9 ms … 629.1 ms    10 runs
 ```
 
-hIt's still twice as slow as the Go version, though!
+It's still twice as slow as the Go version, though!
 Wow!
 
-OK, let's see if we can get some quick flamegraph profiling in here...
+## Without error handling
 
-## Profiling
+There are not very many things that can go wrong in this program.
+Let's just try unwrapping and panicking?
+
+```
+$ hyperfine './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     612.9 ms ±  15.0 ms    [User: 3.768 s, System: 0.030 s]
+  Range (min … max):   595.7 ms … 640.2 ms    10 runs
+```
