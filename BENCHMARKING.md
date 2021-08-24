@@ -85,3 +85,18 @@ Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
 ```
 
 Ok, seems fine!
+
+## Bump allocator
+
+What if deallocation is the problem?
+We don't do anything fancy in `Drop` other than flushing the final output... let's try!
+(Using [bump_alloc](https://crates.io/crates/bump_alloc))
+
+```
+$ hyperfine './target/release/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./target/release/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):      1.351 s ±  0.030 s    [User: 5.809 s, System: 2.811 s]
+  Range (min … max):    1.321 s …  1.406 s    10 runs
+```
+
+... well, no. Probably not a good idea.
