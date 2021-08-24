@@ -1,7 +1,7 @@
 use clap::{crate_authors, crate_version, App, Arg};
 use color_eyre::eyre::{ContextCompat, Result, WrapErr};
 use rayon::prelude::*;
-use std::io::{self, stdin, BufRead};
+use std::io::{self, stdin, stdout, BufRead, BufWriter, Write};
 use strsim::levenshtein;
 
 fn main() {
@@ -37,8 +37,9 @@ fn try_main() -> Result<()> {
 
     lines.par_sort_by_key(|candidate| levenshtein(target, candidate));
 
+    let mut out = BufWriter::new(stdout());
     for candidate in lines {
-        println!("{}", candidate);
+        writeln!(out, "{}", candidate).context("could not write to stdout")?;
     }
 
     Ok(())
