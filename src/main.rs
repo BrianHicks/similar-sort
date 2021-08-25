@@ -26,7 +26,7 @@ fn try_main() -> Result<()> {
         .long_about(
             "works like `sort`, but sorts according to edit distance instead of alphanumerically.\n\nYou can choose the edit distance algorithm we use for this! If you don't know which one you need, Levenshtein is a good default. Try Jaro-Winkler if you care about your strings having similar prefixes (for example files in a project.)"
         )
-        .arg(Arg::new("target").about("sort according to distance from this string"))
+        .arg(Arg::new("target").about("sort according to distance from this string").required(true))
         .arg(
             Arg::new("levenshtein")
                 .long("levenshtein")
