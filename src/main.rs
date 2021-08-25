@@ -54,30 +54,37 @@ fn try_main() -> Result<()> {
         .collect::<io::Result<Vec<String>>>()
         .context("could not read lines from stdin")?;
 
-    let mut distances: Vec<(usize, &String)> = if matches.is_present("jaro-winkler") {
-        lines
+    let mut out = BufWriter::new(stdout());
+
+    if matches.is_present("jaro-winkler") {
+        let mut distances: Vec<(f64, &String)> = lines
             .iter()
-            .map(|candidate| {
-                (
-                    -(jaro_winkler(target, candidate) * 1000.0) as usize,
-                    candidate,
-                )
-            })
-            .collect()
+            .map(|candidate| (jaro_winkler(target, candidate), candidate))
+            .collect();
+
+        distances.sort_unstable_by(|x, y| {
+            x.0.partial_cmp(&y.0)
+                .unwrap_or(std::cmp::Ordering::Equal)
+                .reverse()
+        });
+
+        for (_, candidate) in distances {
+            writeln!(out, "{}", candidate).context("could not write to stdout")?;
+        }
     } else {
         // levenshtein, the default
-        lines
+        let mut distances: Vec<(usize, &String)> = lines
             .iter()
             .map(|candidate| (levenshtein(target, candidate), candidate))
-            .collect()
+            .collect();
+
+        distances.par_sort_unstable_by_key(|x| x.0);
+
+        for (_, candidate) in distances {
+            writeln!(out, "{}", candidate).context("could not write to stdout")?;
+        }
     };
 
-    distances.par_sort_unstable_by_key(|x| x.0);
-
-    let mut out = BufWriter::new(stdout());
-    for (_, candidate) in distances {
-        writeln!(out, "{}", candidate).context("could not write to stdout")?;
-    }
     out.flush().context("could not finish writing to stdout")?;
 
     Ok(())
