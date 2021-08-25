@@ -1,20 +1,11 @@
-use color_eyre::eyre::{Result, WrapErr};
+use clap::{crate_authors, crate_version, App, Arg};
+use color_eyre::eyre::{ContextCompat, Result, WrapErr};
 use rayon::prelude::*;
 use std::io::{self, stdin, stdout, BufRead, BufWriter, Write};
 use strsim::levenshtein;
-use structopt::StructOpt;
 
 #[global_allocator]
 static A: bump_alloc::BumpAlloc = bump_alloc::BumpAlloc::new();
-
-// works like `sort`, but sorts according to Levenshtein distance instead of
-// alphanumerically.
-#[derive(StructOpt)]
-#[structopt(name = "similar-sort")]
-struct Opts {
-    /// sort according to distance from this string
-    target: String,
-}
 
 fn main() {
     if let Err(err) = try_main() {
@@ -26,7 +17,18 @@ fn main() {
 fn try_main() -> Result<()> {
     color_eyre::install()?;
 
-    let opts = Opts::from_args();
+    let matches = App::new("similar-sort")
+        .version(crate_version!())
+        .author(crate_authors!())
+        .about(
+            "works like `sort`, but sorts according to edit distance instead of alphanumerically.",
+        )
+        .arg(Arg::new("target").about("sort according to distance from this string"))
+        .get_matches();
+
+    let target = matches
+        .value_of("target")
+        .context("could not retrieve target from args. Internal error; please report!")?;
 
     let lines: Vec<String> = stdin()
         .lock()
@@ -36,7 +38,7 @@ fn try_main() -> Result<()> {
 
     let mut distances: Vec<(usize, &String)> = lines
         .iter()
-        .map(|candidate| (levenshtein(&opts.target, candidate), candidate))
+        .map(|candidate| (levenshtein(target, candidate), candidate))
         .collect();
 
     distances.par_sort_unstable_by_key(|x| x.0);
