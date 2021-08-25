@@ -42,6 +42,12 @@ fn try_main() -> Result<()> {
                 .arg("levenshtein")
                 .arg("jaro-winkler")
         )
+        .arg(
+            Arg::new("stable-sort")
+                .long("stable-sort")
+                .about("use a stable sort")
+                .long_about("use a stable sort. This may affect performance. Measure if that matters for your use-case!")
+        )
         .get_matches();
 
     let target = matches
@@ -62,11 +68,19 @@ fn try_main() -> Result<()> {
             .map(|candidate| (jaro_winkler(target, candidate), candidate))
             .collect();
 
-        distances.sort_unstable_by(|x, y| {
-            x.0.partial_cmp(&y.0)
-                .unwrap_or(std::cmp::Ordering::Equal)
-                .reverse()
-        });
+	if matches.is_present("stable-sort") {
+    	    distances.par_sort_by(|x, y| {
+                x.0.partial_cmp(&y.0)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+                    .reverse()
+    	    });
+	} else {
+            distances.par_sort_unstable_by(|x, y| {
+                x.0.partial_cmp(&y.0)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+                    .reverse()
+            });
+	}
 
         for (_, candidate) in distances {
             writeln!(out, "{}", candidate).context("could not write to stdout")?;
@@ -78,7 +92,11 @@ fn try_main() -> Result<()> {
             .map(|candidate| (levenshtein(target, candidate), candidate))
             .collect();
 
-        distances.par_sort_unstable_by_key(|x| x.0);
+	if matches.is_present("stable-sort") {
+            distances.par_sort_by_key(|x| x.0);
+	} else {
+            distances.par_sort_unstable_by_key(|x| x.0);
+	}
 
         for (_, candidate) in distances {
             writeln!(out, "{}", candidate).context("could not write to stdout")?;
