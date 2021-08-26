@@ -68,19 +68,19 @@ fn try_main() -> Result<()> {
             .map(|candidate| (jaro_winkler(target, candidate), candidate))
             .collect();
 
-	if matches.is_present("stable-sort") {
-    	    distances.par_sort_by(|x, y| {
+        if matches.is_present("stable-sort") {
+            distances.par_sort_by(|x, y| {
                 x.0.partial_cmp(&y.0)
                     .unwrap_or(std::cmp::Ordering::Equal)
                     .reverse()
-    	    });
-	} else {
+            });
+        } else {
             distances.par_sort_unstable_by(|x, y| {
                 x.0.partial_cmp(&y.0)
                     .unwrap_or(std::cmp::Ordering::Equal)
                     .reverse()
             });
-	}
+        }
 
         for (_, candidate) in distances {
             writeln!(out, "{}", candidate).context("could not write to stdout")?;
@@ -92,11 +92,11 @@ fn try_main() -> Result<()> {
             .map(|candidate| (levenshtein(target, candidate), candidate))
             .collect();
 
-	if matches.is_present("stable-sort") {
+        if matches.is_present("stable-sort") {
             distances.par_sort_by_key(|x| x.0);
-	} else {
+        } else {
             distances.par_sort_unstable_by_key(|x| x.0);
-	}
+        }
 
         for (_, candidate) in distances {
             writeln!(out, "{}", candidate).context("could not write to stdout")?;
