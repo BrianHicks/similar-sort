@@ -213,3 +213,23 @@ Summary
   './result/bin/similar-sort define < /usr/share/dict/words' ran
     3.07 ± 0.08 times faster than './go-result/bin/similar-sort benchmark < /usr/share/dict/words'
 ```
+
+## Coda II
+
+Well, turns out I forgot to have the program calculate the edit distance in parallel.
+It's even faster now!
+
+```
+$ hyperfine -L impl iter,par_iter './{impl}/bin/similar-sort benchmark < /usr/share/dict/words'
+Benchmark #1: ./iter/bin/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):     118.6 ms ±   2.2 ms    [User: 102.4 ms, System: 15.7 ms]
+  Range (min … max):   113.9 ms … 123.3 ms    24 runs
+
+Benchmark #2: ./par_iter/bin/similar-sort benchmark < /usr/share/dict/words
+  Time (mean ± σ):      91.7 ms ±   2.1 ms    [User: 247.9 ms, System: 113.5 ms]
+  Range (min … max):    88.3 ms …  95.6 ms    31 runs
+
+Summary
+  './par_iter/bin/similar-sort benchmark < /usr/share/dict/words' ran
+    1.29 ± 0.04 times faster than './iter/bin/similar-sort benchmark < /usr/share/dict/words'
+```

@@ -64,7 +64,7 @@ fn try_main() -> Result<()> {
 
     if matches.is_present("jaro-winkler") {
         let mut distances: Vec<(f64, &String)> = lines
-            .iter()
+            .par_iter()
             .map(|candidate| (jaro_winkler(target, candidate), candidate))
             .collect();
 
@@ -88,7 +88,7 @@ fn try_main() -> Result<()> {
     } else {
         // levenshtein, the default
         let mut distances: Vec<(usize, &String)> = lines
-            .iter()
+            .par_iter()
             .map(|candidate| (levenshtein(target, candidate), candidate))
             .collect();
 
