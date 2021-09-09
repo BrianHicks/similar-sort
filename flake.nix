@@ -17,9 +17,7 @@
         packages.similar-sort = naersk-lib.buildPackage ./.;
         defaultPackage = packages.similar-sort;
 
-        overlay = final: prev: {
-          similar-sort = packages.similar-sort;
-        };
+        overlay = final: prev: { similar-sort = packages.similar-sort; };
 
         # `nix run`
         apps.similar-sort =
