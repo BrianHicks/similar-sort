@@ -1,5 +1,5 @@
 use clap::{crate_authors, crate_version, App, Arg, ArgGroup};
-use color_eyre::eyre::{ContextCompat, Result, WrapErr};
+use color_eyre::eyre::{Result, WrapErr};
 use rayon::prelude::*;
 use std::io::{self, stdin, stdout, BufRead, BufWriter, Write};
 use strsim::{jaro_winkler, levenshtein};
@@ -26,7 +26,7 @@ fn try_main() -> Result<()> {
         .long_about(
             "works like `sort`, but sorts according to edit distance instead of alphanumerically.\n\nYou can choose the edit distance algorithm we use for this! If you don't know which one you need, Levenshtein is a good default. Try Jaro-Winkler if you care about your strings having similar prefixes (for example files in a project.)"
         )
-        .arg(Arg::new("target").about("sort according to distance from this string").required(true))
+        .arg(Arg::new("target").about("sort according to distance from this string"))
         .arg(
             Arg::new("levenshtein")
                 .long("levenshtein")
@@ -50,9 +50,7 @@ fn try_main() -> Result<()> {
         )
         .get_matches();
 
-    let target = matches
-        .value_of("target")
-        .context("could not retrieve target from args. Internal error; please report!")?;
+    let target = matches.value_of("target").unwrap_or("");
 
     let lines: Vec<String> = stdin()
         .lock()
