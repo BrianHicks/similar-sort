@@ -45,6 +45,8 @@ After this, the `similar-sort` binary should be available on your `PATH`.
 
 If you don't have `nix`, you'll need to install a Rust compiler toolchain yourself and run `cargo build`.
 
+[Isaec](https://github.com/isaec) has also put together [an AUR package](https://aur.archlinux.org/packages/similar-sort-git) if you're on Arch.
+
 ### Adding to Vim
 
 Add this to your vim config:
@@ -79,6 +81,30 @@ define-command -docstring 'open files named similarly to the current buffer' ope
 ```
 
 I have this bound to `-` with `map global normal <minus> ': open-similar<ret>'`.
+
+### Using as a Spellchecker
+
+If you use [fish](https://fishshell.com/), [Isaec](https://github.com) has written [a spell-checker using similar-sort](https://gist.github.com/isaec/ebed80db75d826a77fd528e955db8670). Source reproduced below for convenience:
+
+```fish
+function near
+    set selection (
+        cat /usr/share/dict/american-english \
+            | similar-sort -- (xclip -o) \
+            # tiebreak=index to prefer LD sort order
+            | fzf -i +m --tiebreak=index --preview "dict {}" --preview-window="right,80%,wrap,<60(wrap,up,45%)"
+    )
+
+    # only run xclip if something was selected (i.e. not if fzf was exited)
+    if test "$status" -eq 0
+        # using -loops 2 to wait until clipboard manager has grabbed
+        # using -quiet puts xclip in foreground so we wait to exit
+        echo "$selection" | xclip -r -sel clip -loops 2 -quiet
+    end
+
+    exit
+end
+```
 
 ## License
 
